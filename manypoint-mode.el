@@ -1,4 +1,4 @@
-;;; manypoint-mode.el --- Keep a list of points to jump between
+;;; manypoint-mode.el ---  Quickly jump between different parts of files
 
 ;; Copyright (C) 2015 Andreas Jansson
 

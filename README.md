@@ -1,7 +1,7 @@
 Manypoint
 =========
 
-Emacs mode that lets you move around large files by setting multiple points.
+Quickly jump between different parts of files.
 
 Example:
 ![](https://github.com/andreasjansson/manypoint/blob/master/github-assets/example.gif)
