@@ -46,8 +46,7 @@
 
 (defface manypoint-hightlight-face
   '((t :background "magenta"
-       :foreground "black"
-       :weight 'bold))
+       :foreground "black"))
   "Manypoint highlight in jump windows"
   :group 'manypoint-faces)
 
@@ -56,6 +55,7 @@
   buffer
   pos)
 
+;;;###autoload
 (define-minor-mode manypoint-mode
   "Have many virtual cursors and jump between them easily"
   :global t
