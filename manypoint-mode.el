@@ -123,12 +123,12 @@
         (set-window-configuration window-conf)
         (if p
             (progn
-              (switch-to-buffer (manypoint-p-buffer p))
-              (goto-char (manypoint-p-pos p))
               (setq manypoint-current-point p)
               (manypoint-set-current-mode-line))
           (when (not (eq c 7))
-            (user-error (format "No point named %s" (string c)))))))))
+            (user-error (format "No point named %s" (string c)))))
+        (switch-to-buffer (manypoint-p-buffer manypoint-current-point))
+        (goto-char (manypoint-p-pos manypoint-current-point))))))
 
 (defun manypoint-update-current-point ()
   (when manypoint-current-point
