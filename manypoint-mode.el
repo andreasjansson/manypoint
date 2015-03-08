@@ -61,7 +61,7 @@
   :global t
   :lighter manypoint-mode-line
   :keymap (let ((map (make-sparse-keymap)))
-            (define-key map (kbd "M-SPC s") 'manypoint-save-current-point)
+            (define-key map (kbd "M-SPC s") 'manypoint-save)
             (define-key map (kbd "M-SPC j") 'manypoint-jump)
             (define-key map (kbd "M-SPC c") 'manypoint-clear)
             map)
@@ -70,12 +70,14 @@
 (defun manypoint-clear ()
   "Clear all points."
   (interactive)
+  (setq manypoint-current-point nil)
   (setq manypoint-points (make-hash-table))
-  (manypoint-save-current-point))
+  (manypoint-save))
 
-(defun manypoint-save-current-point ()
+(defun manypoint-save ()
   "Save current position/buffer as new point."
   (interactive)
+  (manypoint-update-current-point)
   (let ((p (make-manypoint-p :name (manypoint-new-name) :buffer (current-buffer) :pos (point))))
     (puthash (manypoint-p-name p) p manypoint-points)
     (setq manypoint-current-point p))
@@ -96,8 +98,7 @@
         (n-points (hash-table-count manypoint-points))
         (overlays))
     (when (> n-points 1)
-      (setf (manypoint-p-buffer manypoint-current-point) (current-buffer))
-      (setf (manypoint-p-pos manypoint-current-point) (point))
+      (manypoint-update-current-point)
       (delete-other-windows)
       (manypoint-open-windows n-points)
       (setq manypoint-mode-line "")
@@ -114,7 +115,7 @@
             do (add-to-list 'overlays overlay)
             do (goto-char pos)
             do (other-window 1))
-      (let* ((inhitit-quit t)
+      (let* ((inhibit-quit t)
              (c (read-char "Jump to point: "))
              (p (gethash c manypoint-points)))
         (loop for overlay in overlays
@@ -129,10 +130,16 @@
           (when (not (eq c 7))
             (user-error (format "No point named %s" (string c)))))))))
 
+(defun manypoint-update-current-point ()
+  (when manypoint-current-point
+   (setf (manypoint-p-buffer manypoint-current-point) (current-buffer))
+   (setf (manypoint-p-pos manypoint-current-point) (point))))
+
 (defun manypoint-set-current-mode-line ()
   (let* ((p manypoint-current-point)
          (name (manypoint-p-name p)))
-   (setq manypoint-mode-line (format " ManyP<%s>" (string name)))))
+   (setq manypoint-mode-line (format " ManyP<%s>" (string name))))
+  (force-mode-line-update))
 
 (defun manypoint-open-windows (n-points)
   (destructuring-bind (rows cols-list) (manypoint-get-window-split n-points)
